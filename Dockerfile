@@ -1,12 +1,15 @@
-FROM python:3.9-slim
+FROM python:3.9-alpine as builder
 
 WORKDIR /app
 
-COPY requirements.txt requirements.txt
-COPY app.py app.py
+COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-EXPOSE 5000
+
+FROM python:3.9-alpine
+
+COPY --from=builder /app /app
+COPY app.py app.py
 
 CMD ["python", "app.py"]
